@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "catboost>=1.2.10",
     "imblearn>=0.0",
     "ipykernel>=7.3.0",
     "jupyter>=1.1.1",
