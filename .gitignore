@@ -8,3 +8,10 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Exclude dataset CSV files > 100MB
+**/data/*.csv
+*.csv
+
+catboost_info/
+**/catboost_info/
