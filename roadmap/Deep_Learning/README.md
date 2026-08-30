@@ -15,5 +15,8 @@ This directory is dedicated to Deep Learning architectures, PyTorch implementati
 
 ## 🛠️ Projects & Datasets
 
-- **[`customer_churn`](file:///c:/AEGIS/roadmap/Deep_Learning/customer_churn/README.md)**: PyTorch ANN Classification on Bank Customer Churn (`Churn_Modelling.csv`) & Telco Customer Churn (`Telco-Customer-Churn.csv`).
+- **[`customer_churn`](file:///c:/AEGIS/roadmap/Deep_Learning/customer_churn/README.md)**: PyTorch ANN Classification on Bank Customer Churn (`Churn_Modelling.csv`).
+- **[`mnist`](file:///c:/AEGIS/roadmap/Deep_Learning/mnist/README.md)**: PyTorch ANN (MLP) Classification on MNIST Handwritten Digits dataset ($28 \times 28$ grayscale images).
+
+
 
