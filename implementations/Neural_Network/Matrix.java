@@ -14,6 +14,24 @@ public class Matrix {
         this.m = new double[n][n];
     }
 
+    public Matrix(Matrix m) {
+        this.m = new double[m.shape()[0]][m.shape()[1]];
+
+        for (int i = 0; i < m.shape()[0]; i++) {
+            for (int j = 0; j < m.shape()[1]; j++) {
+                this.m[i][j] = m.get(i, j);
+            }
+        }
+    }
+
+    public Matrix(double[] arr){
+        this.m = new double[1][arr.length];
+        int i = 0;
+        for (double ele: arr){
+            this.m[0][i] = ele;
+        } 
+    }
+
     public Matrix(int m, int n) throws InvalidValue {
         if (n <= 0 || m <= 0) {
             throw new InvalidValue("Invalid Value");
@@ -178,11 +196,11 @@ public class Matrix {
         return m;
     }
 
-    public static Matrix scalerMul(Matrix m, double n) throws InvalidValue{
-        Matrix ma = new Matrix(m.shape()[0], m.shape()[1]);
+    public static double[][] scalerMul(Matrix m, double n){
+        double[][] ma = new double[m.shape()[0]][m.shape()[1]];
         for(int i = 0; i < m.shape()[0]; i++){
             for(int j = 0; j < m.shape()[1]; j++){
-                ma.set(i, j, m.get(i,j) * n);
+                ma[i][j] = m.get(i, j) *  n;
             }
         }
         return ma;
