@@ -76,23 +76,16 @@ public class Activation {
     public static void main(String[] args) {
         try {
             Matrix m = new Matrix(4, 3);
-
-            // Normal logits
             m.set(0, 0, 2.0);
             m.set(0, 1, 1.0);
             m.set(0, 2, 0.0);
 
-            // Different ordering
             m.set(1, 0, 1.0);
             m.set(1, 1, 2.0);
             m.set(1, 2, 3.0);
-
-            // Equal logits
             m.set(2, 0, 5.0);
             m.set(2, 1, 5.0);
             m.set(2, 2, 5.0);
-
-            // Large logits — tests numerical stability
             m.set(3, 0, 1000.0);
             m.set(3, 1, 1001.0);
             m.set(3, 2, 1002.0);
@@ -101,20 +94,15 @@ public class Activation {
 
             System.out.println("Input:");
             System.out.println(m);
-
             System.out.println("\nSoftmax:");
             System.out.println(result);
-
-            // Verify each row sums to 1
             System.out.println("\nRow sums:");
 
             for (int i = 0; i < result.shape()[0]; i++) {
                 double sum = 0.0;
-
                 for (int j = 0; j < result.shape()[1]; j++) {
                     sum += result.get(i, j);
                 }
-
                 System.out.println("Row " + i + ": " + sum);
             }
 
