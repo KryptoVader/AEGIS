@@ -1,3 +1,5 @@
+import java.security.Identity;
+
 class InvalidValue extends Exception {
     public InvalidValue(String m) {
         super(m);
@@ -67,6 +69,14 @@ public class Matrix {
             }
         }
         return new Matrix(flatData);
+    }
+
+    public static Matrix identity(int i) throws InvalidValue{
+        Matrix I = new Matrix(i,i);
+        for(int j = 0; j < i; j++){
+            I.set(j, j, 1);
+        }
+        return I;
     }
 
     public String toString() {
@@ -196,6 +206,16 @@ public class Matrix {
         return m;
     }
 
+    public static Matrix ones(int i, int j) throws InvalidValue{
+        Matrix res = new Matrix(i,j);
+        for(int k = 0; k < i; k++){
+            for(int l = 0; l < j; l++){
+                res.set(k, l, 1);
+            }
+        }
+        return res;
+    }
+
     public static double[][] scalerMul(Matrix m, double n){
         double[][] ma = new double[m.shape()[0]][m.shape()[1]];
         for(int i = 0; i < m.shape()[0]; i++){
@@ -220,22 +240,7 @@ public class Matrix {
 
     public static void main(String[] args) {
         try {
-            Matrix m1 = new Matrix(3, 3);
-            Matrix m2 = new Matrix(3, 3);
-
-            for (int i = 0; i < m1.shape()[0]; i++) {
-                for (int j = 0; j < m1.shape()[1]; j++) {
-                    m1.set(i, j, j + 1.0);
-                }
-            }
-
-            for (int i = 0; i < m2.shape()[0]; i++) {
-                for (int j = 0; j < m2.shape()[1]; j++) {
-                    m2.set(i, j, j + 1.0);
-                }
-            }
-
-            System.out.println(Hadamard(m1,m2));
+            System.out.println(identity(3));
         } catch (InvalidValue e) {
             System.out.println(e.getMessage());
         }

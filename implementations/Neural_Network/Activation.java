@@ -73,7 +73,20 @@ public class Activation {
         return res;
     }
 
-    public static void main(String[] args) {
+    public static Matrix softmaxDerivative(Matrix z, int i, Matrix softmax) throws InvalidValue{
+        Matrix I = Matrix.identity(z.shape()[1]);
+        Matrix res = new Matrix(softmax.shape()[1],softmax.shape()[1]);
+        Matrix p = new Matrix(softmax.getRow(i));
+        Matrix arr = Matrix.sub(I,Matrix.matmul(Matrix.ones(softmax.shape()[1], 1),p));
+        for (int j = 0; j < arr.shape()[0]; j++) {
+            for (int k = 0; k < arr.shape()[1]; k++) {
+                res.set(j,k,p.get(0, j) * arr.get(j, k));
+            }
+        }
+        return res;
+    }
+
+    public static void main(String[] args){
         try {
             Matrix m = new Matrix(4, 3);
             m.set(0, 0, 2.0);
