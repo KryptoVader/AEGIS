@@ -57,6 +57,14 @@ public class Matrix {
         }
     }
 
+    public static Matrix augment(Matrix m) throws InvalidValue{
+        Matrix res = new Matrix(m.shape()[0], m.shape()[1] + 1);
+        for(int i = 0; i < m.shape()[0]; i++){
+            res.set(i,m.shape()[1], 1);
+        }
+        return res;
+    }
+
     public Matrix flatten() throws InvalidValue {
         int totalElements = this.m.length * this.m[0].length;
         double[][] flatData = new double[1][totalElements];
@@ -239,7 +247,8 @@ public class Matrix {
 
     public static void main(String[] args) {
         try {
-            System.out.println(identity(3));
+            Matrix m = new Matrix(2,3);
+            System.out.println(augment(m));
         } catch (InvalidValue e) {
             System.out.println(e.getMessage());
         }
