@@ -1,5 +1,3 @@
-import java.security.Identity;
-
 class InvalidValue extends Exception {
     public InvalidValue(String m) {
         super(m);
@@ -31,6 +29,7 @@ public class Matrix {
         int i = 0;
         for (double ele: arr){
             this.m[0][i] = ele;
+            i++;
         } 
     }
 
