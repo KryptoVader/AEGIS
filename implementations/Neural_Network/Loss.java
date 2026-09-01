@@ -82,7 +82,7 @@ public class Loss {
         Matrix res = new Matrix(p);
         for(int i = 0; i < y.shape()[0]; i++){
             for(int j = 0; j < y.shape()[1]; j++){
-                res.set(i,j,(p.get(i, j) - y.get(i, j)));
+                res.set(i,j,(y.get(i, j) - p.get(i, j)));
             }
         }
         return new Matrix(Matrix.scalerMul(res, (1.0 / y.shape()[0])));
