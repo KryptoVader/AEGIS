@@ -139,6 +139,20 @@ public class Matrix {
         this.m[i][j] = val;
     }
 
+    public void setRow(int i, double[] arr){
+        for(int j = 0; j < this.getRow(i).length; j++){
+            this.m[i][j] = arr[j];
+        }
+    }
+
+    public double sumRow(int i){
+        double[] arr = this.m[i];
+        double res = 0.0;
+        for(int j = 0; j < arr.length; j++)
+            res += arr[j];
+        return res;
+    }
+
     public double get(int i, int j) {
         return this.m[i][j];
     }
