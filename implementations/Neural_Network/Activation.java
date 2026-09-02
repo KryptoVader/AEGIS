@@ -101,9 +101,7 @@ class Softmax implements Activation {
     @Override
     public Matrix derivative(Matrix z) throws InvalidValue {
         if (z.shape()[0] != 1) {
-            throw new InvalidValue(
-                "Softmax derivative requires a single row."
-            );
+            throw new InvalidValue("Softmax derivative requires a single row.");
         }
 
         Matrix softmax = forward(z);
