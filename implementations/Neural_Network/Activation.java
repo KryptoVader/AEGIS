@@ -1,120 +1,111 @@
-import java.util.function.DoubleUnaryOperator;
 public interface Activation {
-    Matrix forward(Matrix m) throws InvalidValue;
-    Matrix derivative(Matrix m) throws InvalidValue;
+    Matrix forward(Matrix z) throws InvalidValue;
+    Matrix backward(Matrix dLA, Matrix z) throws InvalidValue;
 }
 
 class ReLU implements Activation {
     @Override
-    public Matrix forward(Matrix m) throws InvalidValue {
-        Matrix res = new Matrix(m.shape()[0], m.shape()[1]);
-        for (int i = 0; i < m.shape()[0]; i++) {
-            for (int j = 0; j < m.shape()[1]; j++) {
-                double val = m.get(i, j) > 0 ? m.get(i, j) : 0.0;
-                res.set(i, j, val);
+    public Matrix forward(Matrix z) throws InvalidValue {
+        int N=z.shape()[0], O=z.shape()[1];
+        Matrix result=new Matrix(N,O);
+        for(int i=0;i<N;i++){
+            for(int j=0;j<O;j++){
+                result.set(i,j,Math.max(0.0,z.get(i,j)));
             }
         }
-        return res;
+        return result;
     }
 
     @Override
-    public Matrix derivative(Matrix m) throws InvalidValue {
-        Matrix res = new Matrix(m.shape()[0], m.shape()[1]);
-        for (int i = 0; i < m.shape()[0]; i++) {
-            for (int j = 0; j < m.shape()[1]; j++) {
-                double val = m.get(i, j) > 0 ? 1.0 : 0.0;
-                res.set(i, j, val);
+    public Matrix backward(Matrix dLA, Matrix z) throws InvalidValue {
+        int N=z.shape()[0], O=z.shape()[1];
+        Matrix derivative=new Matrix(N,O);
+        for(int i=0;i<N;i++){
+            for(int j=0;j<O;j++){
+                derivative.set(i,j,z.get(i,j)>0.0?1.0:0.0);
             }
         }
-        return res;
+        return Matrix.Hadamard(dLA,derivative);
     }
 }
 
 class Sigmoid implements Activation {
     @Override
-    public Matrix forward(Matrix m) throws InvalidValue {
-        Matrix res = new Matrix(m.shape()[0], m.shape()[1]);
-        for (int i = 0; i < m.shape()[0]; i++) {
-            for (int j = 0; j < m.shape()[1]; j++) {
-                double val = 1.0 / (1.0 + Math.exp(-m.get(i, j)));
-                res.set(i, j, val);
+    public Matrix forward(Matrix z) throws InvalidValue {
+        int N=z.shape()[0], O=z.shape()[1];
+        Matrix result=new Matrix(N,O);
+        for(int i=0;i<N;i++){
+            for(int j=0;j<O;j++){
+                double value=z.get(i,j);
+                double sigmoid=1.0/(1.0+Math.exp(-value));
+                result.set(i,j,sigmoid);
             }
         }
-        return res;
+        return result;
     }
 
-
     @Override
-    public Matrix derivative(Matrix m) throws InvalidValue {
-        DoubleUnaryOperator deri = x -> x * (1 - x);
-        Matrix res = new Matrix(m.shape()[0], m.shape()[1]);
-        Matrix sig = forward(m);
-
-        for (int i = 0; i < m.shape()[0]; i++) {
-            for (int j = 0; j < m.shape()[1]; j++) {
-                double val = sig.get(i, j);
-                res.set(i, j, deri.applyAsDouble(val));
+    public Matrix backward(Matrix dLA, Matrix z) throws InvalidValue {
+        Matrix a=forward(z);
+        int N=z.shape()[0], O=z.shape()[1];
+        Matrix derivative=new Matrix(N,O);
+        for(int i=0;i<N;i++){
+            for(int j=0;j<O;j++){
+                double p=a.get(i,j);
+                derivative.set(i,j,p*(1.0-p));
             }
         }
-        return res;
+        return Matrix.Hadamard(dLA,derivative);
     }
 }
 
 class Softmax implements Activation {
-    private double sum(double[] r) {
-        double res = 0.0;
-        double maxValue = max(r);
-
-        for (double ele : r){
-            res += Math.exp(ele - maxValue);
-        }
-        return res;
-    }
-
-    private double max(double[] r) {
-        double res = Double.NEGATIVE_INFINITY;
-        for (double ele : r) {
-            if (ele > res) {
-                res = ele;
-            }
-        }
-        return res;
-    }
-
-
     @Override
-    public Matrix forward(Matrix z) {
-        Matrix res = new Matrix(z);
+    public Matrix forward(Matrix z) throws InvalidValue {
+        int N=z.shape()[0], O=z.shape()[1];
+        Matrix result=new Matrix(N,O);
 
-        for (int i = 0; i < z.shape()[0]; i++) {
-            double[] row = z.getRow(i);
-            double maxValue = max(row);
-            double denominator = sum(row);
-            for (int j = 0; j < z.shape()[1]; j++) {
-                double val = Math.exp(z.get(i, j) - maxValue) / denominator;
-                res.set(i, j, val);
+        for(int i=0;i<N;i++){
+            double max=z.get(i,0);
+
+            for(int j=1;j<O;j++){
+                max=Math.max(max,z.get(i,j));
+            }
+
+            double sum=0.0;
+
+            for(int j=0;j<O;j++){
+                double exp=Math.exp(z.get(i,j)-max);
+                result.set(i,j,exp);
+                sum+=exp;
+            }
+
+            for(int j=0;j<O;j++){
+                result.set(i,j,result.get(i,j)/sum);
             }
         }
-        return res;
+
+        return result;
     }
 
     @Override
-    public Matrix derivative(Matrix z) throws InvalidValue {
-        if (z.shape()[0] != 1) {
-            throw new InvalidValue("Softmax derivative requires a single row.");
-        }
+    public Matrix backward(Matrix dLA, Matrix z) throws InvalidValue {
+        Matrix a=forward(z);
+        int N=z.shape()[0], O=z.shape()[1];
+        Matrix dZ=new Matrix(N,O);
 
-        Matrix softmax = forward(z);
-        Matrix I = Matrix.identity(z.shape()[1]);
-        Matrix p = new Matrix(softmax.getRow(0));
-        Matrix arr = Matrix.sub(I,Matrix.matmul(Matrix.ones(softmax.shape()[1],1),p));
-        Matrix res = new Matrix(softmax.shape()[1],softmax.shape()[1]);
+        for(int i=0;i<N;i++){
+            for(int j=0;j<O;j++){
+                double gradient=0.0;
+                for(int k=0;k<O;k++){
+                    double delta=(j==k)?1.0:0.0;
+                    double jacobian=a.get(i,j)*(delta-a.get(i,k));
+                    gradient+=dLA.get(i,k)*jacobian;
+                }
 
-        for (int j = 0; j < arr.shape()[0]; j++) {
-            for (int k = 0; k < arr.shape()[1]; k++) {
-                res.set(j,k,p.get(0, j) * arr.get(j, k));
+                dZ.set(i,j,gradient);
             }
         }
-        return res;
+        return dZ;
     }
 }

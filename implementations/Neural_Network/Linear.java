@@ -5,9 +5,14 @@ public class Linear {
     private Matrix dW;
     private Matrix dB;
 
-    public Linear(int inputFeatures, int outputFeatures) throws InvalidValue {
-        this.w = new Matrix(outputFeatures, inputFeatures);
-        this.b = new Matrix(1, outputFeatures);
+    public Linear(int inputFeatures,int outputFeatures) throws InvalidValue {
+        this.w=new Matrix(outputFeatures,inputFeatures);
+        this.b=new Matrix(1,outputFeatures);
+        for(int i=0;i<outputFeatures;i++){
+            for(int j=0;j<inputFeatures;j++){
+                this.w.set(i,j,(Math.random()-0.5)*2.0);
+            }
+        }
     }
 
     public void setWeight(int i, int j, double value) {

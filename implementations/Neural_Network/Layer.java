@@ -17,8 +17,7 @@ public class Layer {
         Matrix z = l.forward(X);
         this.z = z;
         if (this.a != null) {
-            Matrix pred = a.forward(z);
-            return new Matrix(pred);
+            return new Matrix(a.forward(z));
         }
         return new Matrix(z);
     }
@@ -26,14 +25,12 @@ public class Layer {
     public Matrix backward(Matrix dLA) throws InvalidValue {
         Matrix dz = dLA;
         if (this.a != null) {
-            dz = Matrix.Hadamard(dLA, this.a.derivative(this.z));
+            dz = this.a.backward(dLA, this.z);
         }
-
-        Matrix dX = this.l.backward(dz);
-        return dX;
+        return this.l.backward(dz);
     }
 
-    public Linear getLinear(){
+    public Linear getLinear() {
         return this.l;
     }
 }
