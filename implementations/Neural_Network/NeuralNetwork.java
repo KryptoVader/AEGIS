@@ -54,6 +54,25 @@ public class NeuralNetwork {
         return result;
     }
 
+    public double accuracy(Matrix X,Matrix y) throws InvalidValue {
+        Matrix prediction=predict(X);
+        int correct=0;
+        for(int i=0;i<y.shape()[0];i++){
+            int predictedClass=(int)prediction.get(i,0);
+            int actualClass=0;
+            for(int j=0;j<y.shape()[1];j++){
+                if(y.get(i,j)==1.0){
+                    actualClass=j;
+                    break;
+                }
+            }
+            if(predictedClass==actualClass){
+                correct++;
+            }
+        }
+        return (double)correct/y.shape()[0];
+    }
+
     public static void main(String[] args) {
         try {
             Layer l1 = new Layer(2, 4, new ReLU());
@@ -91,6 +110,7 @@ public class NeuralNetwork {
 
             System.out.println("Predictions:");
             System.out.println(model.predict(X));
+            System.out.println("Accuracy: "+model.accuracy(X,Y));
 
         } catch (InvalidValue e) {
             System.err.println(e.getMessage());
