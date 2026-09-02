@@ -55,10 +55,18 @@ public class Linear {
     }
 
     public Matrix getW() {
-        return this.w;
+        return new Matrix(this.w);
     }
 
     public Matrix getB() {
-        return this.b;
+        return new Matrix(this.b);
+    }
+
+    public void setW(Matrix w){
+        this.w = w;
+    }
+
+    public void setB(Matrix b){
+        this.b = b;
     }
 }
