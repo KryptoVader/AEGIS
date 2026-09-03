@@ -157,6 +157,41 @@ public class Matrix {
         return this.m[i][j];
     }
 
+    public Matrix getRows(int start, int end) throws InvalidValue{
+        if(start < 0 || start >= this.m.length || end > this.m.length || end <= start){
+            throw new InvalidValue("Invalid Indexing");
+        }
+
+        double[][] n = new double[end-start][this.shape()[1]];
+        int index = 0;
+        for(int i = start; i < end; i++){
+            double[] arr = this.getRow(i);
+            for(int j = 0; j < this.shape()[1]; j++){
+                n[index][j] = arr[j];
+            }
+            index++;
+        }
+        return new Matrix(n);
+    }
+
+    public Matrix getRows(int[] indices) throws InvalidValue{
+        if(indices==null||indices.length==0){
+            throw new InvalidValue("Invalid Indices");
+        }
+        
+        double[][] n=new double[indices.length][this.shape()[1]];
+        for(int i=0;i<indices.length;i++){
+            if(indices[i]<0||indices[i]>=this.m.length){
+                throw new InvalidValue("Invalid Index");
+            }
+            double[] row=this.getRow(indices[i]);
+            for(int j=0;j<this.shape()[1];j++){
+                n[i][j]=row[j];
+            }
+        }
+        return new Matrix(n);
+    }
+
     public static double dot(double[] m1, double[] m2) throws InvalidValue {
         if (m1.length != m2.length) {
             throw new InvalidValue("Wrong Series");
