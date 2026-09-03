@@ -67,11 +67,9 @@ class Softmax implements Activation {
 
         for(int i=0;i<N;i++){
             double max=z.get(i,0);
-
             for(int j=1;j<O;j++){
                 max=Math.max(max,z.get(i,j));
             }
-
             double sum=0.0;
 
             for(int j=0;j<O;j++){
@@ -84,7 +82,6 @@ class Softmax implements Activation {
                 result.set(i,j,result.get(i,j)/sum);
             }
         }
-
         return result;
     }
 
