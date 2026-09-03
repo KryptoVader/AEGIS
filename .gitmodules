@@ -1,0 +1,3 @@
+[submodule "implementations/Neural_Network"]
+	path = implementations/Neural_Network
+	url = https://github.com/KryptoVader/Neural_Network.git
